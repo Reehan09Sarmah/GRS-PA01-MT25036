@@ -13,34 +13,32 @@ for program in "${PROGS[@]}"; do
 
     echo "Running $program + $function, number of workers = 2"
 
-    top -b -d 1 -n 5 | grep "Program$program" |
-    awk '{cpu+=$9; mem+=$10; cnt++}
-         END {if(cnt>0) print cpu/cnt, mem/cnt; else print 0,0}' > /tmp/top_out &
-
+    top -b -d 1 -n 6 > top.txt &
     TOP_PID=$!
+    
+    iostat -dx 1 6 > io.txt &
+    IO_PID=$!
 
-    if [ "$program" == "A" ]; then
-        EXEC_TIME=$(/usr/bin/time -f "%e" taskset -c $_CORE ./out/ProgramA $function 2 2>&1 >/dev/null)
+    if [ "$program" = "A" ]; then
+      TIME_VAL=$(/usr/bin/time -f "%e" taskset -c $_CORE ./out/ProgramA $function 2 2>&1)
     else
-        EXEC_TIME=$(/usr/bin/time -f "%e" taskset -c $_CORE ./out/ProgramB $function 2 2>&1 >/dev/null)
+      TIME_VAL=$(/usr/bin/time -f "%e" taskset -c $_CORE ./out/ProgramB $function 2 2>&1)
     fi
 
-    wait $TOP_PID
+   
+    wait $TOP_PID $IO_PID
 
-    read CPU_AVG MEM_AVG < /tmp/top_out
+    
+    CPU=$(awk 'NR>7 && NF {sum+=$9; c++} END {if(c>0) print sum/c; else print 0}' top.txt)
+    MEM=$(awk 'NR>7 && NF {sum+=$10; c++} END {if(c>0) print sum/c; else print 0}' top.txt)
 
-    read DREAD DWRITE DUTIL < <(
-        iostat -dx 1 5 |
-        awk 'NR>6 && $1!="Device:" {
-                r+=$6; w+=$7; u+=$14; cnt++
-             }
-             END {
-                if(cnt>0) print r/cnt, w/cnt, u/cnt;
-                else print 0,0,0
-             }'
-    )
+    DREAD=$(awk 'NR>3 && NF {r+=$6; c++} END {if(c>0) print r/c; else print 0}' io.txt)
+    DWRITE=$(awk 'NR>3 && NF {w+=$7; c++} END {if(c>0) print w/c; else print 0}' io.txt)
+    DUTIL=$(awk 'NR>3 && NF {u+=$NF; c++} END {if(c>0) print u/c; else print 0}' io.txt)
 
-    echo "$program+$function,$CPU_AVG,$MEM_AVG,$DREAD,$DWRITE,$DUTIL,$EXEC_TIME" >> $_CSV
+    echo "$program+$function,$CPU,$MEM,$DREAD,$DWRITE,$DUTIL,$TIME_VAL" >> $_CSV
 
   done
 done
+
+rm -f top.txt io.txt
