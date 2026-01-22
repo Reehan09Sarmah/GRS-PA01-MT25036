@@ -7,7 +7,7 @@ PROGS=("A" "B")
 FUNCTIONS=("cpu" "mem" "io")
 
 
-echo "Program,Function,CPU%,MEM%,Disk_Read_kBps,Disk_Write_kBps,Disk_Util%,Exec_Time_sec" > $_CSV
+echo "Program+Function,CPU%,MEM%,Disk_Read_kBps,Disk_Write_kBps,Disk_Util%,Exec_Time_sec" > $_CSV
 
 for program in "${PROGS[@]}"; do
   for function in "${FUNCTIONS[@]}"; do
@@ -51,7 +51,7 @@ for program in "${PROGS[@]}"; do
     EXEC_TIME=$(echo "$END_TIME - $START_TIME" | bc)
 
    
-    echo "$program,$function,$CPU_AVG,$MEM_AVG,$DREAD,$DWRITE,$DUTIL,$EXEC_TIME" >> $_CSV
+    echo "$program+$function,$CPU_AVG,$MEM_AVG,$DREAD,$DWRITE,$DUTIL,$EXEC_TIME" >> $_CSV
 
   done
 done
