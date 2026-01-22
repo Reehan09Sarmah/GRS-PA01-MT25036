@@ -1,37 +1,33 @@
 #!/bin/bash
 
-_CSV="MT25036_Part_C_CSV.csv"
+_CSV="./data/MT25036_Part_C_CSV.csv"
 _CORE=1
 
 PROGS=("A" "B")
 FUNCTIONS=("cpu" "mem" "io")
-
 
 echo "Program+Function,CPU%,MEM%,Disk_Read_kBps,Disk_Write_kBps,Disk_Util%,Exec_Time_sec" > $_CSV
 
 for program in "${PROGS[@]}"; do
   for function in "${FUNCTIONS[@]}"; do
 
-    echo "Running $program + $function"
+    echo "Running $program + $function, number of workers = 2"
 
-    
-    START_TIME=$(date +%s.%N)
+    top -b -d 1 -n 5 | grep "Program$program" |
+    awk '{cpu+=$9; mem+=$10; cnt++}
+         END {if(cnt>0) print cpu/cnt, mem/cnt; else print 0,0}' > /tmp/top_out &
+
+    TOP_PID=$!
 
     if [ "$program" == "A" ]; then
-        taskset -c $_CORE ./out/ProgramA $function &
+        EXEC_TIME=$(/usr/bin/time -f "%e" taskset -c $_CORE ./out/ProgramA $function 2 2>&1 >/dev/null)
     else
-        taskset -c $_CORE ./out/ProgramB $function &
+        EXEC_TIME=$(/usr/bin/time -f "%e" taskset -c $_CORE ./out/ProgramB $function 2 2>&1 >/dev/null)
     fi
 
-    PROG_PID=$!
+    wait $TOP_PID
 
-  
-    read CPU_AVG MEM_AVG < <(
-        top -b -d 1 -n 5 -p $PROG_PID |
-        awk 'NR>7 { cpu+=$9; mem+=$10; cnt++ }
-             END { if(cnt>0) print cpu/cnt, mem/cnt; else print 0,0 }'
-    )
-
+    read CPU_AVG MEM_AVG < /tmp/top_out
 
     read DREAD DWRITE DUTIL < <(
         iostat -dx 1 5 |
@@ -44,13 +40,6 @@ for program in "${PROGS[@]}"; do
              }'
     )
 
-    
-    wait $PROG_PID
-
-    END_TIME=$(date +%s.%N)
-    EXEC_TIME=$(echo "$END_TIME - $START_TIME" | bc)
-
-   
     echo "$program+$function,$CPU_AVG,$MEM_AVG,$DREAD,$DWRITE,$DUTIL,$EXEC_TIME" >> $_CSV
 
   done

@@ -10,12 +10,13 @@ void* io();
 
 int main(int argc, char* argv[]){
 
-    if (argc != 2) {
+    if (argc != 3) {
         printf("No arguments passed! (for eg: cpu, mem, io)");
         return -1;
     }
+    int K = atoi(argv[2]);
 
-    for(int i = 0; i<2; i++){
+    for(int i = 0; i<K; i++){
         pid_t pid = fork();
 
         if(pid == 0){
@@ -34,7 +35,7 @@ int main(int argc, char* argv[]){
         }
     }
 
-    for(int i = 0; i<2; i++){
+    for(int i = 0; i<K; i++){
         wait(NULL);
     }
 

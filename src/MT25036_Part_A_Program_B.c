@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
 
@@ -27,8 +28,9 @@ void* thread_worker(void* arg){
 int main(int argc, char* argv[]){
 
     pthread_t threads[2];
+    int K = atoi(argv[2]);
 
-    for(int i = 0; i<2; i++){
+    for(int i = 0; i<K; i++){
         int th = pthread_create(&threads[i], NULL, thread_worker, argv[1]);
         if(th != 0){
             printf("Thread creation failed!");
@@ -36,7 +38,7 @@ int main(int argc, char* argv[]){
         }
     }
 
-    for(int i = 0; i < 2; i++){
+    for(int i = 0; i < K; i++){
         pthread_join(threads[i], NULL);
     }
 
