@@ -19,7 +19,7 @@ for program in "${PROGS[@]}"; do
     for function in "${FUNCTIONS[@]}"; do
         for K in "${NUM_WORKERS[@]}"; do
 
-            echo "Running $program+$function, number of workers = $K"
+            echo "Running $program+$function with $K workers"
 
             top -b -d 1 -n 6 > /tmp/top_out_d &
             TOP_PID=$!
