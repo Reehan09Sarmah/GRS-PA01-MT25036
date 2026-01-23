@@ -1,6 +1,6 @@
 #!/bin/bash
 
-_CSV="./data/MT25036_Part_D_CSV.csv"
+_CSV="MT25036_Part_D_CSV.csv"
 _CORE=2
 
 PROGS=("A" "B")

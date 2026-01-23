@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-df = pd.read_csv("./data/MT25036_Part_D_CSV.csv")
+df = pd.read_csv("MT25036_Part_D_CSV.csv")
 
 df[['Program', 'Function']] = df['Program+Function'].str.split('+', expand=True)
 

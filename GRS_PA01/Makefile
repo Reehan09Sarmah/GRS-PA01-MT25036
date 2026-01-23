@@ -1,15 +1,15 @@
 CC = gcc
 CFLAGS = -Wall -pthread
-COMMON_SRC = src/MT25036_Part_B_Workers.c
+COMMON_SRC = MT25036_Part_B_Workers.c
 
 all: ProgramA ProgramB
 
 ProgramA: src/MT25036_Part_A_Program_A.c $(COMMON_SRC)
-	$(CC) $(CFLAGS) src/MT25036_Part_A_Program_A.c src/MT25036_Part_B_Workers.c -o out/ProgramA
+	$(CC) $(CFLAGS) MT25036_Part_A_Program_A.c MT25036_Part_B_Workers.c -o ProgramA
 
 ProgramB: src/MT25036_Part_A_Program_B.c $(COMMON_SRC)
-	$(CC) $(CFLAGS) src/MT25036_Part_A_Program_B.c src/MT25036_Part_B_Workers.c -o out/ProgramB
+	$(CC) $(CFLAGS) MT25036_Part_A_Program_B.c MT25036_Part_B_Workers.c -o ProgramB
 
 clean:
-	rm -f out/ProgramA out/ProgramB
+	rm -f ProgramA ProgramB
 
