@@ -27,8 +27,9 @@ void* thread_worker(void* arg){
 
 int main(int argc, char* argv[]){
 
-    pthread_t threads[2];
+    
     int K = atoi(argv[2]);
+    pthread_t threads[K];
 
     for(int i = 0; i<K; i++){
         int th = pthread_create(&threads[i], NULL, thread_worker, argv[1]);

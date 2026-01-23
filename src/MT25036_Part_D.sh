@@ -1,6 +1,6 @@
 #!/bin/bash
 
-_CSV="MT25036_Part_D_CSV.csv"
+_CSV="./data/MT25036_Part_D_CSV.csv"
 _CORE=2
 
 PROGS=("A" "B")
@@ -10,10 +10,10 @@ echo "Program+Function,num_workers,CPU%,MEM%,Disk_Read_kBps,Disk_Write_kBps,Disk
 
 for program in "${PROGS[@]}"; do
 
-    if ["$program" == "A"]; then
-        NUM_WORKERS=(2 3 4)
+    if [ "$program" == "A" ]; then
+        NUM_WORKERS=(2 3 4 5)
     else
-        NUM_WORKERS=(2 3 4)
+        NUM_WORKERS=(2 3 4 5 6 7 8)
     fi
 
     for function in "${FUNCTIONS[@]}"; do
@@ -21,30 +21,31 @@ for program in "${PROGS[@]}"; do
 
             echo "Running $program+$function, number of workers = $K"
 
-            top -b -d 1 -n 5 | grep "Program$program" |
-            awk '{cpu+=$9; mem+=$10; cnt++}
-                END {if(cnt > 0) print cpu/cnt, mem/cnt; else print 0,0}' > /tmp/top_out_d &
-            
+            top -b -d 1 -n 6 > /tmp/top_out_d &
             TOP_PID=$!
+            
+            iostat -dx 1 6 > /tmp/io_out_d &
+            IO_PID=$!
 
-            if [ '$program' == 'A' ]; then
-                EXEC_TIME=$(/usr/bin/time -f "%e" taskset -c $_CORE ./out/ProgramA $function $K 2>&1 >/dev/null)
+            if [ "$program" == "A" ]; then
+                EXEC_TIME=$(/usr/bin/time -f "%e" taskset -c $_CORE ./out/ProgramA $function $K 2>&1)
             else
-                EXEC_TIME=$(/usr/bin/time -f "%e" taskset -c $_CORE ./out/ProgramB $function $K 2>&1 >/dev/null)
+                EXEC_TIME=$(/usr/bin/time -f "%e" taskset -c $_CORE ./out/ProgramB $function $K 2>&1)
             fi
 
-            wait $TOP_PID
-            read CPU_AVG MEM_AVG < /tmp/top_out_d
+            wait $TOP_PID $IO_PID
 
-            read DREAD DWRITE DUTIL < <(
-                iostat -dx 1 5 |
-                awk 'NR>6 && $1!="Device:" {
-                        r+=$6; w+=$7; u+=$14; cnt++
-                     }
-                     END {
-                        if(cnt>0) print r/cnt, w/cnt, u/cnt;
-                        else print 0,0,0
-                     }'
-            )
+            CPU_AVG=$(awk 'NR>7 && NF {sum+=$9; c++} END {if(c>0) print sum/c; else print 0}' /tmp/top_out_d)
+            MEM_AVG=$(awk 'NR>7 && NF {sum+=$10; c++} END {if(c>0) print sum/c; else print 0}' /tmp/top_out_d)
+
+            DREAD=$(awk 'NR>3 && NF {r+=$6; c++} END {if(c>0) print r/c; else print 0}' /tmp/io_out_d)
+            DWRITE=$(awk 'NR>3 && NF {w+=$7; c++} END {if(c>0) print w/c; else print 0}' /tmp/io_out_d)
+            DUTIL=$(awk 'NR>3 && NF {u+=$NF; c++} END {if(c>0) print u/c; else print 0}' /tmp/io_out_d)
 
             echo "$program+$function,$K,$CPU_AVG,$MEM_AVG,$DREAD,$DWRITE,$DUTIL,$EXEC_TIME" >> $_CSV
+
+        done
+    done
+done
+
+rm -f /tmp/top_out_d /tmp/io_out_d
