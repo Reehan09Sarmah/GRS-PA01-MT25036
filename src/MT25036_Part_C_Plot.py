@@ -21,13 +21,13 @@ plt.bar(x - width/2, cpu_A, width, label='Program A')
 plt.bar(x + width/2, cpu_B, width, label='Program B')
 
 plt.xticks(x, functions)
-plt.xlabel("Workload")
+plt.xlabel("Functions")
 plt.ylabel("CPU Utilization (%)")
-plt.title("CPU Utilization Comparison (Part C, 2 Workers)")
+plt.title("CPU% Comparison (2 Workers)")
 plt.legend()
 plt.grid(axis='y')
 
-plt.savefig("./plots/Part-C/cpu_util_comparison.png")
+plt.savefig("./plots/Part-C/CPU_percentage_comparison.png")
 plt.close()
 
 
@@ -40,13 +40,13 @@ plt.bar(x - width/2, mem_A, width, label='Program A')
 plt.bar(x + width/2, mem_B, width, label='Program B')
 
 plt.xticks(x, functions)
-plt.xlabel("Workload")
+plt.xlabel("Functions")
 plt.ylabel("Memory Usage (%)")
-plt.title("Memory Utilization Comparison (Part C, 2 Workers)")
+plt.title("Mem% Comparison (2 Workers)")
 plt.legend()
 plt.grid(axis='y')
 
-plt.savefig("./plots/Part-C/mem_util_comparison.png")
+plt.savefig("./plots/Part-C/mem_percentage_comparison.png")
 plt.close()
 
 
@@ -59,11 +59,31 @@ plt.bar(x - width/2, disk_A, width, label='Program A')
 plt.bar(x + width/2, disk_B, width, label='Program B')
 
 plt.xticks(x, functions)
-plt.xlabel("Workload")
+plt.xlabel("Functions")
 plt.ylabel("Disk Utilization (%)")
-plt.title("Disk Utilization Comparison (Part C, 2 Workers)")
+plt.title("Disk% Comparison (2 Workers)")
 plt.legend()
 plt.grid(axis='y')
 
-plt.savefig("./plots/Part-C/disk_util_comparison.png")
+plt.savefig("./plots/Part-C/disk_percentage_comparison.png")
+plt.close()
+
+programs = ['A', 'B']
+
+for func in ['cpu', 'mem', 'io']:
+    times = []
+    for prog in programs:
+        val = df[(df['Program'] == prog) & (df['Function'] == func)]['Exec_Time_sec'].values
+        times.append(val[0] if len(val) > 0 else 0)
+
+    plt.plot(programs, times, marker='o', label=func.upper())
+
+plt.xlabel("Program")
+plt.ylabel("Execution Time (sec)")
+plt.title("Execution Time vs Program (Part C)")
+plt.legend()
+plt.grid(True)
+
+# Save plot
+plt.savefig("./plots/Part-C/exec_time_vs_program.png")
 plt.close()

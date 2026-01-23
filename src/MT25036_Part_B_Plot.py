@@ -20,7 +20,7 @@ for func in functions:
     plt.legend()
     plt.grid(True)
     
-    plt.savefig(f"./plots/Part-D/exec_time_{func}.png")
+    plt.savefig(f"./plots/Part-D/execution_time_{func}.png")
     plt.close()
 
 
@@ -32,11 +32,11 @@ for prog in ['A', 'B']:
 
 plt.xlabel("Number of Workers")
 plt.ylabel("CPU Utilization (%)")
-plt.title("CPU Utilization vs Workers (CPU workload)")
+plt.title("CPU% vs Workers (CPU)")
 plt.legend()
 plt.grid(True)
 
-plt.savefig("./plots/Part-D/cpu_util_cpu_workload.png")
+plt.savefig("./plots/Part-D/cpu_percentage.png")
 plt.close()
 
 
@@ -48,11 +48,11 @@ for prog in ['A', 'B']:
 
 plt.xlabel("Number of Workers")
 plt.ylabel("Disk Utilization (%)")
-plt.title("Disk Utilization vs Workers (IO workload)")
+plt.title("Disk% vs Workers (IO)")
 plt.legend()
 plt.grid(True)
 
-plt.savefig("./plots/Part-D/disk_util_io.png")
+plt.savefig("./plots/Part-D/disk_percentage_io.png")
 plt.close()
 
 
@@ -66,7 +66,7 @@ for func in functions:
 
     plt.xlabel("Number of Workers")
     plt.ylabel("Memory Usage (%)")
-    plt.title(f"Memory Usage vs Workers ({func.upper()})")
+    plt.title(f"Mem% vs Workers ({func.upper()})")
     plt.legend()
     plt.grid(True)
 
