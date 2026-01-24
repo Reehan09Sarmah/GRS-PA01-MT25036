@@ -20,7 +20,7 @@ for func in functions:
     plt.legend()
     plt.grid(True)
     
-    plt.savefig(f"./plots/Part-D/execution_time_{func}.png")
+    plt.savefig(f"MT25036_Part_D_execution_time_{func}.png")
     plt.close()
 
 
@@ -36,7 +36,7 @@ plt.title("CPU% vs Workers (CPU)")
 plt.legend()
 plt.grid(True)
 
-plt.savefig("./plots/Part-D/cpu_percentage.png")
+plt.savefig("MT25036_Part_D_cpu_percentage.png")
 plt.close()
 
 
@@ -52,7 +52,7 @@ plt.title("Disk% vs Workers (IO)")
 plt.legend()
 plt.grid(True)
 
-plt.savefig("./plots/Part-D/disk_percentage_io.png")
+plt.savefig("MT25036_Part_D_disk_percentage_io.png")
 plt.close()
 
 
@@ -70,5 +70,5 @@ for func in functions:
     plt.legend()
     plt.grid(True)
 
-    plt.savefig(f"./plots/Part-D/mem_util_{func}.png")
+    plt.savefig(f"MT25036_Part_D_mem_util_{func}.png")
     plt.close()

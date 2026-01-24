@@ -27,7 +27,7 @@ plt.title("CPU% Comparison (2 Workers)")
 plt.legend()
 plt.grid(axis='y')
 
-plt.savefig("./plots/Part-C/CPU_percentage_comparison.png")
+plt.savefig("MT25036_Part_C_CPU_percentage_comparison.png")
 plt.close()
 
 
@@ -46,7 +46,7 @@ plt.title("Mem% Comparison (2 Workers)")
 plt.legend()
 plt.grid(axis='y')
 
-plt.savefig("./plots/Part-C/mem_percentage_comparison.png")
+plt.savefig("MT25036_Part_C_mem_percentage_comparison.png")
 plt.close()
 
 
@@ -65,7 +65,7 @@ plt.title("Disk% Comparison (2 Workers)")
 plt.legend()
 plt.grid(axis='y')
 
-plt.savefig("./plots/Part-C/disk_percentage_comparison.png")
+plt.savefig("MT25036_Part_C_disk_percentage_comparison.png")
 plt.close()
 
 programs = ['A', 'B']
@@ -85,5 +85,5 @@ plt.legend()
 plt.grid(True)
 
 # Save plot
-plt.savefig("./plots/Part-C/exec_time_vs_program.png")
+plt.savefig("MT25036_Part_C_exec_time_vs_program.png")
 plt.close()
