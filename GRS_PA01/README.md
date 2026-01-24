@@ -165,7 +165,10 @@ Both test scripts measure these metrics:
 
 - **CPU%**: How much processor the program uses
 - **MEM%**: How much memory the program uses
-- **Disk_Util%**: How busy the disk is
+- **IO** (I/O Performance): Further divided into 3 parts:
+  - **Disk_Read_kBps**: Read speed (kilobytes per second)
+  - **Disk_Write_kBps**: Write speed (kilobytes per second)
+  - **Disk_Util%**: How busy the disk is
 - **Exec_Time_sec**: How long the program takes to finish
 
 The data is saved in CSV files, and graphs are automatically created.
